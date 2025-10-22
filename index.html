@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portfolio</title>
+  <style>
+/* =========================================================
+   FONT & BASE RESET
+========================================================= */
+@font-face {
+  font-family: "Portfolio";
+  src: url("font/cucina.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background:#fff;
+  color:#000;
+  font-family: "Portfolio", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  line-height: 1.25;
+}
+
+/* =========================================================
+   TYPOGRAPHY
+========================================================= */
+p { font-size: 16px; line-height: 20px; margin: 0; }
+a { color: inherit; text-decoration: underline; }
+.label { color: #FF6A00; font-size: 12px; display: block; font-weight: normal; }
+.special { color: #FF6A00; }
+
+/* =========================================================
+   GRID LAYOUT
+========================================================= */
+:root {
+  --gap: 24px;
+  --pad: 24px;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--gap);
+  padding: var(--pad);
+}
+.left  { grid-column: span 3; }
+.main  { grid-column: span 6; }
+.right { grid-column: span 3; }
+
+@media (max-width: 768px) {
+  :root { --gap: 12px; --pad: 12px; }
+  .container { grid-template-columns: 1fr; }
+  .left, .main, .right { grid-column: 1 / -1; }
+}
+
+/* =========================================================
+   UTILITY CLASSES — MARGINS
+========================================================= */
+.mt-0  { margin-top: 0; }
+.mt-6  { margin-top: 6px; }
+.mt-12 { margin-top: 12px; }
+.mt-24 { margin-top: 24px; }
+.mt-36 { margin-top: 36px; }
+.mt-48 { margin-top: 48px; }
+.mt-64 { margin-top: 64px; }
+
+.mb-0  { margin-bottom: 0; }
+.mb-6  { margin-bottom: 6px; }
+.mb-12 { margin-bottom: 12px; }
+.mb-24 { margin-bottom: 24px; }
+.mb-36 { margin-bottom: 36px; }
+.mb-48 { margin-bottom: 48px; }
+.mb-64 { margin-bottom: 64px; }
+
+/* =========================================================
+   UTILITY CLASSES — PADDING
+========================================================= */
+.pt-0  { padding-top: 0; }
+.pt-6  { padding-top: 6px; }
+.pt-12 { padding-top: 12px; }
+.pt-24 { padding-top: 24px; }
+.pt-36 { padding-top: 36px; }
+.pt-48 { padding-top: 48px; }
+.pt-64 { padding-top: 64px; }
+
+.pb-0  { padding-bottom: 0; }
+.pb-6  { padding-bottom: 6px; }
+.pb-12 { padding-bottom: 12px; }
+.pb-24 { padding-bottom: 24px; }
+.pb-36 { padding-bottom: 36px; }
+.pb-48 { padding-bottom: 48px; }
+.pb-64 { padding-bottom: 64px; }
+
+/* =========================================================
+   STACK UTILITIES — uniform spacing between children
+========================================================= */
+.stack-6 > * + *  { margin-top: 6px; }
+.stack-12 > * + * { margin-top: 12px; }
+.stack-24 > * + * { margin-top: 24px; }
+.stack-36 > * + * { margin-top: 36px; }
+.stack-48 > * + * { margin-top: 48px; }
+
+/* =========================================================
+   TEXT ALIGNMENT
+========================================================= */
+.text-left   { text-align: left; }
+.text-center { text-align: center; }
+.text-right  { text-align: right; }
+
+/* =========================================================
+   MEDIA ELEMENTS
+========================================================= */
+.media {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.js-autoplay {
+  will-change: transform;
+}
+
+/* =========================================================
+   PROJECT GRID & CAROUSEL
+========================================================= */
+.project-header {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--gap);
+  align-items: start;
+}
+.project-title { grid-column: span 7; font-size: 16px; line-height: 20px; }
+.project-role  { grid-column: span 5; text-align: right; }
+
+@media (max-width: 768px) {
+  .project-title, .project-role { grid-column: 1 / -1; text-align: left; }
+}
+
+.carousel { position: relative; }
+.carousel .controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.carousel .controls button {
+  padding: 10px 0px;
+  font-size: 22px;
+  line-height: 1;
+  background: rgba(255,255,255,0.92);
+  color:#000;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+}
+.carousel .controls button:focus-visible {
+  outline: 2px solid #FF6A00;
+  outline-offset: 2px;
+}
+.carousel img.media {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform .25s ease;
+  touch-action: pan-y;
+}
+.carousel .dots, .carousel .dot { display: none !important; }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <aside class="left">
+      <p class="label" style="padding-bottom: 12px">Ciao, I'm</p>
+      <p>Greta Varesano</p>
+    </aside>
+
+    <main class="main stack-48 pb-64">
+      <!-- ABOUT -->
+      <section class="stack-12">
+        <p class="label">About</p>
+        <div class="stack-12">
+          <p>I’m a Milan-based digital designer focused on blending functionality with style. Off-duty, I’m easily distracted by the world of cute.</p>
+        </div>
+      </section>
+
+      <!-- EXPERIENCES -->
+      <section class="stack-12">
+        <p class="label">Experiences & Education</p>
+        <div class="stack-48">
+          <article class="stack-12">
+            <header class="project-header">
+              <div class="project-title">
+                The Level Group | La DoubleJ<br>
+                <span class="special">Digital Designer & Web Specialist</span>
+              </div>
+              <div class="project-role"><p>2022 – Present</p></div>
+            </header>
+            <p>Responsible for digital communications, including newsletters and website component redesigns. Manage design and development of static pages for special projects, handle ticket workflows, and contribute to social media through templates, story assets, and visual feed planning.</p>
+          </article>
+
+          <article class="stack-12">
+            <header class="project-header">
+              <div class="project-title">
+                <a href="https://gigadesignstudio.com/" target="_blank">Giga Design Studio</a><br>
+                <span class="special">Digital Designer & Web Specialist</span>
+              </div>
+              <div class="project-role"><p>2020 – 2022</p></div>
+            </header>
+            <p>Designed immersive digital experiences and brand identities, blending visual storytelling with functional design.</p>
+          </article>
+
+          <article class="stack-12">
+            <header class="project-header">
+              <div class="project-title">
+                Mondadori<br>
+                <span class="special">Digital Designer, Web Specialist & Graphic Designer</span>
+              </div>
+              <div class="project-role"><p>2020 – 2022</p></div>
+            </header>
+            <p>Design and coding of landing pages and newsletters, as well as layout for printed materials.</p>
+          </article>
+
+          <article class="stack-12">
+            <header class="project-header">
+              <div class="project-title">
+                Politecnico di Milano<br>
+                <span class="special">B.A. in Communication Design</span>
+              </div>
+              <div class="project-role"><p>2016 – 2020</p></div>
+            </header>
+            <p>Developed a strong foundation in visual communication, digital design, and creative strategy.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- PROJECTS -->
+      <section class="stack-12">
+        <p class="label">Projects</p>
+        <div class="stack-48">
+
+          <!-- APRIL STUDIO -->
+          <article class="stack-12">
+            <a href="https://www.april.studio/" target="_blank"><video class="media mb-6 js-autoplay drop-shadow" muted playsinline loop preload="none">
+              <source src="video/april-trailer.mov" type="video/mp4">
+            </video></a>
+            <header class="project-header">
+              <div class="project-title">
+                <span class="special">April Studio</span><br><a href="https://www.april.studio/" target="_blank">Visit Website</a>
+              </div>
+              <div class="project-role">
+                <p>Web Design, Graphic Design<br>Made at Giga Design Studio.</p>
+              </div>
+              <div class="project-title">
+                Website for a hybrid creative agency built around the concept of time and the immediacy of visual output. The design reflects the studio’s modern spirit through a clean sans-serif identity. The homepage functions as a hybrid between a Netflix-like interface and a story-based navigation, allowing for dynamic video showcases. The result merges clarity, rhythm, and immersion.
+              </div>
+            </header>
+          </article>
+
+          <!-- GESTALTUNG -->
+          <article class="stack-12">
+            <a href="https://gestaltungslehre.tuwien.ac.at/" target="_blank"><video class="media mb-6 js-autoplay drop-shadow" muted playsinline loop preload="none">
+              <source src="video/gd.mp4" type="video/mp4">
+            </video></a>
+            <header class="project-header">
+              <div class="project-title">
+                <span class="special">Gestaltungslehre and Design</span><br><a href="https://gestaltungslehre.tuwien.ac.at/" target="_blank">Visit Website</a>
+              </div>
+              <div class="project-role">
+                <p>Web Design, Graphic Design<br>Made at Giga Design Studio.</p>
+              </div>
+              <div class="project-title">
+                Identity and website for a TU Wien course defined by its dual nature — academic and bold, yet ironic. The visual language reflects this contrast through a refined yet unconventional approach. The platform acts as a structured archive where students can easily access and share course materials. The outcome blends institutional precision with a playful spirit.
+              </div>
+            </header>
+          </article>
+
+          <!-- LAFIL -->
+          <article class="stack-12">
+            <a href="https://www.lafil.com/" target="_blank"><video class="media mb-6 js-autoplay drop-shadow" muted playsinline loop preload="none">
+              <source src="video/lafil.mov" type="video/mp4">
+            </video></a>
+            <header class="project-header">
+              <div class="project-title">
+                <span class="special">LaFil</span><br><a href="https://www.lafil.com/" target="_blank">Visit Website</a>
+              </div>
+              <div class="project-role">
+                <p>Web Design, Graphic Design<br>Made at Giga Design Studio.</p>
+              </div>
+              <div class="project-title">
+              Digital identity and website refresh for Milan’s Philharmonic Orchestra. The goal was to renew a classic institution by bringing it closer to a younger audience. The design combines ironic editorial tone, vivid color palettes, and pop-inspired layouts. The result is a contemporary take on a traditionally formal world.
+              </div>
+            </header>
+          </article>
+
+          <!-- SALOTTO -->
+          <article class="stack-12">
+            <div class="carousel js-carousel">
+              <img class="media drop-shadow" alt="Salotto" src="img/salotto/01.jpg" loading="lazy" draggable="false" />
+              <template class="slides">
+                <img alt="Salotto" src="img/salotto/02.jpg" loading="lazy" />
+                <img alt="Salotto" src="img/salotto/03.jpg" loading="lazy" />
+                <img alt="Salotto" src="img/salotto/04.jpg" loading="lazy" />
+              </template>
+              <div class="controls" aria-label="Controlli carousel">
+                <button class="prev" aria-label="Previous image">←</button>
+                <button class="next" aria-label="Next image">→</button>
+              </div>
+            </div>
+            <header class="project-header">
+              <div class="project-title"><span class="special">Salotto</span></div>
+              <div class="project-role">
+                <p>Web Design, Identity<br>Made at Giga Design Studio.</p>
+              </div>
+              <div class="project-title">Visual direction for a project inspired by ’90s aesthetics and playful excess. The concept celebrated irony, nostalgia, and a deliberate touch of visual “trash.” Typography and compositions were intentionally exaggerated, experimenting with bold forms and contrasts. The result feels raw, spontaneous, and unapologetically expressive.</div>
+            </header>
+          </article>
+
+          <!-- WILDEN -->
+          <article class="stack-12">
+            <div class="carousel js-carousel">
+              <img class="media drop-shadow" alt="Wilden" src="img/wilden/01.jpg" loading="lazy" draggable="false" />
+              <template class="slides">
+                <img alt="Wilden" src="img/wilden/02.jpg" loading="lazy" />
+                <img alt="Wilden" src="img/wilden/03.jpg" loading="lazy" />
+                <img alt="Wilden" src="img/wilden/04.jpg" loading="lazy" />
+                <img alt="Wilden" src="img/wilden/05.jpg" loading="lazy" />
+              </template>
+              <div class="controls" aria-label="Controlli carousel">
+                <button class="prev" aria-label="Previous image">←</button>
+                <button class="next" aria-label="Next image">→</button>
+              </div>
+            </div>
+            <header class="project-header">
+              <div class="project-title">
+                <span class="special">Wilden Herbals</span>
+              </div>
+              <div class="project-role">
+                <p>Web Design, Graphic Design<br>Made at Giga Design Studio.</p>
+              </div>
+              <div class="project-title">
+                Brand and art direction for a premium herbal tea company with a focus on product origin and purity. The design highlights the organic nature of the brand through minimal layouts and clean typographic compositions. Art direction extended to the product shootings, ensuring visual coherence across touchpoints. The result conveys calmness, quality, and understated elegance.
+              </div>
+            </header>
+          </article>
+
+          <!-- NATURASI -->
+          <article class="stack-12">
+            <div class="carousel js-carousel">
+              <img class="media drop-shadow" alt="NaturaSì" src="img/nsi/00.jpg" loading="lazy" draggable="false" />
+              <template class="slides">
+                <img alt="NaturaSì" src="img/nsi/01.jpg" loading="lazy" />
+                <img alt="NaturaSì" src="img/nsi/02.jpg" loading="lazy" />
+                <img alt="NaturaSì" src="img/nsi/03.jpg" loading="lazy" />
+                <img alt="NaturaSì" src="img/nsi/04.jpg" loading="lazy" />
+                <img alt="NaturaSì" src="img/nsi/05.jpg" loading="lazy" />
+              </template>
+              <div class="controls" aria-label="Controlli carousel">
+                <button class="prev" aria-label="Previous image">←</button>
+                <button class="next" aria-label="Next image">→</button>
+              </div>
+            </div>
+            <header class="project-header">
+              <div class="project-title"><span class="special">NaturaSì</span></div>
+              <div class="project-role">
+                <p>Web Design, Identity<br>Made at Giga Design Studio.</p>
+              </div>
+              <div class="project-title">Long-term digital consultancy and redesign project for the brand’s e-commerce ecosystem. Initial work focused on key UX improvements across app and website, later evolving into a broader rethinking of flows and needs. The project addressed challenges such as multi-warehouse management and complex product data. The new design emphasizes clarity and flexibility.</div>
+            </header>
+          </article>
+
+          <!-- LDJ OB -->
+          <article class="stack-12">
+            <video class="media mb-6 js-autoplay drop-shadow" muted playsinline loop preload="none">
+              <source src="video/ob.mov" type="video/mp4">
+            </video>
+            <header class="project-header">
+              <div class="project-title">
+                <span class="special">La DoubleJ x Orlebar Brown</span>
+              </div>
+              <div class="project-role">
+                <p>Identity, Web Design, Front-end Web Development, Graphic Design<br>Made at La DoubleJ</p>
+              </div>
+              <div class="project-title">
+                Editorial webpage and coordinated digital campaign for La DoubleJ’s collaboration with Orlebar Brown. The project connected storytelling, retail, and events across multiple touchpoints. The guide-style page featured curated locations tied to real-life activations, supported by consistent visuals across newsletters, banners, and social media. A cohesive identity tied content and commerce together.
+              </div>
+            </header>
+          </article>
+
+          <!-- LDJ NL -->
+          <article class="stack-12">
+            <div class="carousel js-carousel">
+              <img class="media drop-shadow" alt="NaturaSì" src="img/ldj/ldj-nl.jpg" loading="lazy" draggable="false" />
+              <template class="slides">
+                <img alt="NaturaSì" src="img/ldj/02.jpg" loading="lazy" />
+              </template>
+              <div class="controls" aria-label="Controlli carousel">
+                <button class="prev" aria-label="Previous image">←</button>
+                <button class="next" aria-label="Next image">→</button>
+              </div>
+            </div>
+            <header class="project-header">
+              <div class="project-title"><span class="special">La DoubleJ</span></div>
+              <div class="project-role">
+                <p>Newsletter Identity Design<br>Made at La DoubleJ.</p>
+              </div>
+              <div class="project-title">Ongoing design work for La DoubleJ’s weekly newsletters, each with distinct creative direction and visual tone. Every edition expresses a unique identity through typography, layout, and color use aligned with product focus. The designs often evolve into coordinated Instagram content, ensuring continuity across channels. A constant balance of editorial storytelling and commercial clarity.</div>
+            </header>
+          </article>
+        </div>
+      </section>
+
+      <!-- PERSONAL EXPLORATION -->
+      <section class="stack-48">
+        <p class="label">Miscellaneous</p>
+        <div class="stack-48">
+          <article class="stack-12">
+            <div class="carousel js-carousel">
+              <img class="media drop-shadow" alt="Personal exploration" src="img/personal/01.jpg" loading="lazy" draggable="false" />
+              <template class="slides">
+                <img alt="Personal exploration" src="img/personal/02.jpg" loading="lazy" />
+                <img alt="Personal exploration" src="img/personal/03.jpg" loading="lazy" />
+                <img alt="Personal exploration" src="img/personal/04.jpg" loading="lazy" />
+                <img alt="Personal exploration" src="img/personal/05.jpg" loading="lazy" />
+                <img alt="Personal exploration" src="img/personal/06.jpg" loading="lazy" />
+              </template>
+              <div class="controls" aria-label="Controlli carousel">
+                <button class="prev" aria-label="Previous image">←</button>
+                <button class="next" aria-label="Next image">→</button>
+              </div>
+            </div>
+            <header class="project-header">
+              <div class="project-title">
+                <span class="special">Personal exploration of the untold</span>
+              </div>
+              <div class="project-role">
+                <p>A collection of personal 3D works exploring reality and emotion. Characters modeled in Blender serve as visual reflections of untold thoughts and everyday perception. Nostalgica ma cute.</p>
+              </div>
+            </header>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <aside class="right">
+      <p class="label" style="padding-bottom: 12px">Useless Section</p>
+      <p>Here’s a list of useful links:<br><br>
+        Need to buy a gift?<br>What’s better than <a href="https://alwaysjudgeabookbyitscover.com/" target="_blank" class="special">ugly books</a>.<br><br>
+        Love dogs?<br>Here’s <a href="https://www.are.na/anna-matuella/good-dog" target="_blank" class="special">a collection for you</a>.<br><br>
+        Feeling the relatable angst of a doubtful graphic designer?<br>Have fun <a href="https://www.are.na/eugene-zagorsky/memes-to-be-fired" target="_blank" class="special">here</a>.</p>
+    </aside>
+  </div>
+
+  <script>
+  /* Video autoplay on viewport — optimized version */
+  (function() {
+    const vids = document.querySelectorAll('.js-autoplay');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const v = entry.target;
+        if (v._timeout) clearTimeout(v._timeout);
+        if (entry.isIntersecting) {
+          v._timeout = setTimeout(() => {
+            v.play().catch(() => {});
+          }, 150);
+        } else {
+          v._timeout = setTimeout(() => {
+            v.pause();
+          }, 150);
+        }
+      });
+    }, { threshold: 0.25 });
+
+    vids.forEach(v => {
+      v.style.willChange = 'transform';
+      io.observe(v);
+    });
+  })();
+
+  /* Carousel (loop + swipe) */
+  (function() {
+    document.querySelectorAll('.js-carousel').forEach(carousel => {
+      const viewport = carousel.querySelector('img.media');
+      const tpl = carousel.querySelector('template.slides');
+      if (!tpl) return;
+      const raw = [viewport, ...tpl.content.querySelectorAll('img')];
+      const slides = raw.map(el => ({
+        src: el.getAttribute('src'),
+        alt: el.getAttribute('alt') || ''
+      }));
+      let index = 0;
+
+      function render() {
+        const s = slides[index];
+        if (viewport.getAttribute('src') !== s.src) viewport.setAttribute('src', s.src);
+        viewport.setAttribute('alt', s.alt);
+        const nextIdx = (index + 1) % slides.length;
+        const prevIdx = (index - 1 + slides.length) % slides.length;
+        [slides[nextIdx].src, slides[prevIdx].src].forEach(src => { const i = new Image(); i.src = src; });
+      }
+
+      function go(i) {
+        index = (i + slides.length) % slides.length;
+        render();
+      }
+
+      const prevBtn = carousel.querySelector('.prev');
+      const nextBtn = carousel.querySelector('.next');
+      if (prevBtn && nextBtn) {
+        prevBtn.addEventListener('click', () => go(index - 1));
+        nextBtn.addEventListener('click', () => go(index + 1));
+      }
+
+      let pointerId = null, startX = 0, deltaX = 0, dragging = false;
+      const THRESHOLD = 40;
+
+      function onDown(e) {
+        dragging = true;
+        pointerId = e.pointerId;
+        startX = e.clientX;
+        deltaX = 0;
+        try { viewport.setPointerCapture(pointerId); } catch(_) {}
+        viewport.style.transition = 'none';
+      }
+      function onMove(e) {
+        if (!dragging) return;
+        if (pointerId != null && e.pointerId !== pointerId) return;
+        deltaX = e.clientX - startX;
+        viewport.style.transform = `translateX(${deltaX}px)`;
+      }
+      function onUp() {
+        if (!dragging) return;
+        dragging = false;
+        try { viewport.releasePointerCapture(pointerId); } catch(_) {}
+        pointerId = null;
+        if (deltaX > THRESHOLD) go(index - 1);
+        else if (deltaX < -THRESHOLD) go(index + 1);
+        viewport.style.transition = '';
+        viewport.style.transform = 'translateX(0)';
+      }
+
+      if ('PointerEvent' in window) {
+        viewport.addEventListener('pointerdown', onDown);
+        viewport.addEventListener('pointermove', onMove);
+        viewport.addEventListener('pointerup', onUp);
+        viewport.addEventListener('pointercancel', onUp);
+        viewport.addEventListener('pointerleave', onUp);
+      }
+      viewport.addEventListener('dragstart', e => e.preventDefault());
+      render();
+    });
+  })();
+  </script>
+</body>
+</html>
