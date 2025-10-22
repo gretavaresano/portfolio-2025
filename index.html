@@ -112,13 +112,19 @@ a { color: inherit; text-decoration: underline; }
 .text-right  { text-align: right; }
 
 /* =========================================================
-   MEDIA ELEMENTS
+   MEDIA ELEMENTS + FADE-IN
 ========================================================= */
 .media {
   width: 100%;
   height: auto;
   display: block;
+  opacity: 0;
+  transition: opacity 0.6s ease;
 }
+.media.loaded {
+  opacity: 1;
+}
+
 .js-autoplay {
   will-change: transform;
 }
@@ -165,13 +171,12 @@ a { color: inherit; text-decoration: underline; }
   width: 100%;
   height: auto;
   display: block;
-  transition: transform .25s ease;
+  transition: transform .25s ease, opacity 0.6s ease;
   touch-action: pan-y;
 }
 .carousel .dots, .carousel .dot { display: none !important; }
   </style>
 </head>
-
 <body>
   <div class="container">
     <aside class="left">
@@ -394,9 +399,9 @@ a { color: inherit; text-decoration: underline; }
           <!-- LDJ NL -->
           <article class="stack-12">
             <div class="carousel js-carousel">
-              <img class="media drop-shadow" alt="NaturaSì" src="img/ldj/ldj-nl.jpg" loading="lazy" draggable="false" />
+              <img class="media drop-shadow" alt="LDJ" src="img/ldj/01.jpg" loading="lazy" draggable="false" />
               <template class="slides">
-                <img alt="NaturaSì" src="img/ldj/02.jpg" loading="lazy" />
+                <img alt="LDJ" src="img/ldj/02.jpg" loading="lazy" />
               </template>
               <div class="controls" aria-label="Controlli carousel">
                 <button class="prev" aria-label="Previous image">←</button>
@@ -454,106 +459,121 @@ a { color: inherit; text-decoration: underline; }
         Feeling the relatable angst of a doubtful graphic designer?<br>Have fun <a href="https://www.are.na/eugene-zagorsky/memes-to-be-fired" target="_blank" class="special">here</a>.</p>
     </aside>
   </div>
-
   <script>
-  /* Video autoplay on viewport — optimized version */
-  (function() {
-    const vids = document.querySelectorAll('.js-autoplay');
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        const v = entry.target;
-        if (v._timeout) clearTimeout(v._timeout);
-        if (entry.isIntersecting) {
-          v._timeout = setTimeout(() => {
-            v.play().catch(() => {});
-          }, 150);
-        } else {
-          v._timeout = setTimeout(() => {
-            v.pause();
-          }, 150);
-        }
+    /* =========================================================
+       FADE-IN MEDIA ELEMENTS
+    ========================================================== */
+    document.querySelectorAll('.media').forEach(el => {
+      if (el.complete) el.classList.add('loaded');
+      else el.addEventListener('load', () => el.classList.add('loaded'));
+      // Support for <video>
+      if (el.tagName === 'VIDEO') {
+        el.addEventListener('loadeddata', () => el.classList.add('loaded'));
+      }
+    });
+  
+    /* =========================================================
+       VIDEO AUTOPLAY ON VIEWPORT
+    ========================================================== */
+    (function() {
+      const vids = document.querySelectorAll('.js-autoplay');
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          const v = entry.target;
+          if (v._timeout) clearTimeout(v._timeout);
+          if (entry.isIntersecting) {
+            v._timeout = setTimeout(() => {
+              v.play().catch(() => {});
+            }, 150);
+          } else {
+            v._timeout = setTimeout(() => {
+              v.pause();
+            }, 150);
+          }
+        });
+      }, { threshold: 0.25 });
+  
+      vids.forEach(v => {
+        v.style.willChange = 'transform';
+        io.observe(v);
       });
-    }, { threshold: 0.25 });
-
-    vids.forEach(v => {
-      v.style.willChange = 'transform';
-      io.observe(v);
-    });
-  })();
-
-  /* Carousel (loop + swipe) */
-  (function() {
-    document.querySelectorAll('.js-carousel').forEach(carousel => {
-      const viewport = carousel.querySelector('img.media');
-      const tpl = carousel.querySelector('template.slides');
-      if (!tpl) return;
-      const raw = [viewport, ...tpl.content.querySelectorAll('img')];
-      const slides = raw.map(el => ({
-        src: el.getAttribute('src'),
-        alt: el.getAttribute('alt') || ''
-      }));
-      let index = 0;
-
-      function render() {
-        const s = slides[index];
-        if (viewport.getAttribute('src') !== s.src) viewport.setAttribute('src', s.src);
-        viewport.setAttribute('alt', s.alt);
-        const nextIdx = (index + 1) % slides.length;
-        const prevIdx = (index - 1 + slides.length) % slides.length;
-        [slides[nextIdx].src, slides[prevIdx].src].forEach(src => { const i = new Image(); i.src = src; });
-      }
-
-      function go(i) {
-        index = (i + slides.length) % slides.length;
+    })();
+  
+    /* =========================================================
+       CAROUSEL (loop + swipe)
+    ========================================================== */
+    (function() {
+      document.querySelectorAll('.js-carousel').forEach(carousel => {
+        const viewport = carousel.querySelector('img.media');
+        const tpl = carousel.querySelector('template.slides');
+        if (!tpl) return;
+        const raw = [viewport, ...tpl.content.querySelectorAll('img')];
+        const slides = raw.map(el => ({
+          src: el.getAttribute('src'),
+          alt: el.getAttribute('alt') || ''
+        }));
+        let index = 0;
+  
+        function render() {
+          const s = slides[index];
+          if (viewport.getAttribute('src') !== s.src) viewport.setAttribute('src', s.src);
+          viewport.setAttribute('alt', s.alt);
+          const nextIdx = (index + 1) % slides.length;
+          const prevIdx = (index - 1 + slides.length) % slides.length;
+          [slides[nextIdx].src, slides[prevIdx].src].forEach(src => { const i = new Image(); i.src = src; });
+        }
+  
+        function go(i) {
+          index = (i + slides.length) % slides.length;
+          render();
+        }
+  
+        const prevBtn = carousel.querySelector('.prev');
+        const nextBtn = carousel.querySelector('.next');
+        if (prevBtn && nextBtn) {
+          prevBtn.addEventListener('click', () => go(index - 1));
+          nextBtn.addEventListener('click', () => go(index + 1));
+        }
+  
+        let pointerId = null, startX = 0, deltaX = 0, dragging = false;
+        const THRESHOLD = 40;
+  
+        function onDown(e) {
+          dragging = true;
+          pointerId = e.pointerId;
+          startX = e.clientX;
+          deltaX = 0;
+          try { viewport.setPointerCapture(pointerId); } catch(_) {}
+          viewport.style.transition = 'none';
+        }
+        function onMove(e) {
+          if (!dragging) return;
+          if (pointerId != null && e.pointerId !== pointerId) return;
+          deltaX = e.clientX - startX;
+          viewport.style.transform = `translateX(${deltaX}px)`;
+        }
+        function onUp() {
+          if (!dragging) return;
+          dragging = false;
+          try { viewport.releasePointerCapture(pointerId); } catch(_) {}
+          pointerId = null;
+          if (deltaX > THRESHOLD) go(index - 1);
+          else if (deltaX < -THRESHOLD) go(index + 1);
+          viewport.style.transition = '';
+          viewport.style.transform = 'translateX(0)';
+        }
+  
+        if ('PointerEvent' in window) {
+          viewport.addEventListener('pointerdown', onDown);
+          viewport.addEventListener('pointermove', onMove);
+          viewport.addEventListener('pointerup', onUp);
+          viewport.addEventListener('pointercancel', onUp);
+          viewport.addEventListener('pointerleave', onUp);
+        }
+        viewport.addEventListener('dragstart', e => e.preventDefault());
         render();
-      }
-
-      const prevBtn = carousel.querySelector('.prev');
-      const nextBtn = carousel.querySelector('.next');
-      if (prevBtn && nextBtn) {
-        prevBtn.addEventListener('click', () => go(index - 1));
-        nextBtn.addEventListener('click', () => go(index + 1));
-      }
-
-      let pointerId = null, startX = 0, deltaX = 0, dragging = false;
-      const THRESHOLD = 40;
-
-      function onDown(e) {
-        dragging = true;
-        pointerId = e.pointerId;
-        startX = e.clientX;
-        deltaX = 0;
-        try { viewport.setPointerCapture(pointerId); } catch(_) {}
-        viewport.style.transition = 'none';
-      }
-      function onMove(e) {
-        if (!dragging) return;
-        if (pointerId != null && e.pointerId !== pointerId) return;
-        deltaX = e.clientX - startX;
-        viewport.style.transform = `translateX(${deltaX}px)`;
-      }
-      function onUp() {
-        if (!dragging) return;
-        dragging = false;
-        try { viewport.releasePointerCapture(pointerId); } catch(_) {}
-        pointerId = null;
-        if (deltaX > THRESHOLD) go(index - 1);
-        else if (deltaX < -THRESHOLD) go(index + 1);
-        viewport.style.transition = '';
-        viewport.style.transform = 'translateX(0)';
-      }
-
-      if ('PointerEvent' in window) {
-        viewport.addEventListener('pointerdown', onDown);
-        viewport.addEventListener('pointermove', onMove);
-        viewport.addEventListener('pointerup', onUp);
-        viewport.addEventListener('pointercancel', onUp);
-        viewport.addEventListener('pointerleave', onUp);
-      }
-      viewport.addEventListener('dragstart', e => e.preventDefault());
-      render();
-    });
-  })();
-  </script>
-</body>
-</html>
+      });
+    })();
+    </script>
+  </body>
+  </html>
